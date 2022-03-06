@@ -1,11 +1,43 @@
 #print(1)
 def wip(add=''): input('Sorry! This feature is still in development. '+add)
 
+class save:
+  def __init__(self, x): self.x = x
+
+class window:
+  def list(dict):
+    x = save(None)
+    import tkinter as Tk
+    tk = Tk.Tk()
+    for item in dict:
+      def work(): 
+        x.x = dict[item]
+        tk.destroy()
+      Tk.Button(text=item, command=work).pack()
+    tk.mainloop()
+    return x.x
+
+def inside(path):
+  with open(path, 'r') as f:
+    x = f.read()
+    f.close()
+  return x
+
+def dividing(thing, yes=' '):
+  list = thing.split(yes)
+  return list[0], yes.join(list[1:])
+
 requirements = ['info.py','Info.py' 'data.py', 'Data.py', 'requirement.py', 'Requirement.py']
 #input(requirements)
 
 important = ['saved.txt', 'accounts.py']
- 
+
+splitter = '=a!*-_-*!A='
+
+def intPlus(str):
+  try: return int(str)
+  except: raise ValueError('That is not an interger.')
+
 def test(file, basic):
   try:
     with open(file, 'r') as f: f.close()
@@ -13,6 +45,44 @@ def test(file, basic):
     with open(file, 'w') as f:
       f.write(basic)
       f.close()
+
+def cover(str, around, between=''): return around+between+str+between+around
+
+class tools:
+  def __init__(self, account): self.username = account.username
+
+  def calculator(self, text):
+    try: return eval(text)
+    except: raise ValueError('Can\'t include letters.')
+  
+  def generatePassword(self, lenght):
+    from random import choice
+    objects = '½§!1"2@#3£¤4$%5&6/7{(8[)9]=0}?+\\`´QqWwEeRrTtYyUuIiOoPpÅåAaSsDdFfGgHhJjKkLlÖöÄä^¨~\'*><|ZzXxCcVvBbNnNnMm;,:._-'
+    x = ''
+    for n in range(lenght):
+      x = x + choice(objects)
+    return x
+
+  def showUsername(self):
+    clear()
+    input(self.username)
+  
+  def menu(self):
+    while True:
+      clear()
+      x = work(input('[0] Generate password\n\n[1] Username\n\n[2] Calculator\n\n[3] Exit\n\nChoice: '))
+      if x == 0:
+        clear()
+        try: 
+          n = intPlus(input('Lenght: '))
+          input('\n'+self.generatePassword(n))
+        except ValueError as e: input('\n'+str(e))
+      elif x == 1: self.showUsername()
+      elif x == 2: 
+        clear()
+        try: input('\n'+str(self.calculator(input('Calculator: '))))
+        except ValueError as e: input('\n'+str(e))
+      elif x == 3: break
 
 class encryption:
   def __init__(self, key, filename, variablename):
@@ -123,9 +193,70 @@ def setTitle(title):
   if my_os == 'win32': os.system('title '+title)
   elif my_os == 'darwin': os.system("""PROMPT_COMMAND='echo -ne "\\033]0;${USER}@${HOSTNAME}: ${PWD}\\007"'""")
 
+class ThoughtsNet:
+  def __init__(self, account, file, folder):
+    import os
+    self.folder = folder
+    self.username = account.username
+    try: os.mkdir(folder)
+    except: pass
+    self.path = os.path.join(folder, file)
+  
+  def open(self):
+    try: inside(self.path)
+    except: 
+      with open(self.path, 'w') as f: f.close()
+
+  def send(self, content):
+    if inside(self.path) == '': x = ''
+    else: x = '\n'
+    with open(self.path, 'a') as f:
+      f.write(x+cover(self.username, splitter, '\n')+'\n'+content)
+      f.close()
+  
+  def get(self):
+    with open(self.path, 'r') as f: 
+      x = f.read()
+      f.close()
+    x = x.split(splitter+'\n')
+    names = []
+    messages = []
+    try: x.remove('')
+    except: pass
+    #print(x)
+    a = True
+    for item in x:
+      if a: 
+        names.append(item.strip())
+        a = False
+      else:
+        messages.append(item)
+        a = True
+    x = ''
+    n = 0
+    #print(names, messages)
+    for item in names: 
+      x = x + '\n' + item + '\n' + messages[n]
+      #print(messages[n])
+      n = n + 1
+    
+    return x, messages, names
+  
+  def search(self, messages, names, searchFor):
+    results = []
+    posts = []
+    x = 0
+    for item in names:
+      posts.append(item+'\n'+messages[x])
+      x = x + 1
+    for post in posts:
+      if searchFor in post: results.append(post)
+    return results
+
 class chat:
   def __init__(self, account, recipient):
     import os
+    self.file = ''
     self.divider = '='
     self.folder = 'Chats'
     self.username = account.username
@@ -149,14 +280,49 @@ class chat:
     elif not self.recipient in names: raise ValueError('That recipient does not exist.')
     else: 
       #raise ValueError('This conversation does not exist.')
-      with open(os.path.join(self.path, alt2)) as f:
+      with open(os.path.join(self.path, alt2), 'w') as f:
         f.write('')
         f.close()
       name = alt2
-    path = os.path.join(self.path, name)
+    self.file = os.path.join(self.path, name)
   
-  def send(self):
-    pass
+  def send(self, message):
+    if not splitter in message:
+      if inside(self.file) == '': x = ''
+      else: x = '\n'
+      with open(self.file, 'a') as f:
+        f.write(x+cover(self.username, splitter, '\n')+'\n'+message)
+        f.close()
+    else: raise ValueError('That can not be in sent as it includes a banned combination.')
+  
+  def get(self):
+    with open(self.file, 'r') as f: 
+      x = f.read()
+      f.close()
+    x = x.split(splitter+'\n')
+    names = []
+    messages = []
+    try: x.remove('')
+    except: pass
+    #print(x)
+    a = True
+    for item in x:
+      if a: 
+        names.append(item.strip())
+        a = False
+      else:
+        messages.append(item)
+        a = True
+    x = ''
+    n = 0
+    #print(names, messages)
+    for item in names: 
+      x = x + '\n' + item + '\n' + messages[n]
+      #print(messages[n])
+      n = n + 1
+    
+    return x, messages, names
+
 
 class appStore:
   def __init__(self, account):
@@ -218,6 +384,21 @@ class appStore:
       split = '.'
       f.write(split.join(requirement.split(split)[:-1]))
       f.close()
+  
+  def search(self, messages, names, searchFor):
+    results = []
+    posts = []
+    x = 0
+    for item in names:
+      posts.append(item+'\n'+messages[x])
+      x = x + 1
+    for post in posts:
+      if searchFor in post: results.append(post)
+    return results
+
+  def search(self, thing):
+    splitting = ', '
+    thing.split(splitting)
 
   def download(self, name):
     import os
@@ -340,6 +521,8 @@ while True:
 
 savedfile = 'saved.py'
 savedvariable = 'saved'
+thoughtsfile = 'thoughts.txt'
+thoughtsfolder = 'ThoughtsNet'
 failed = False
 try:
   from encryptionM import generateKey
@@ -348,13 +531,40 @@ except: failed = True
 setTitle('Vision')
 while acc.loggedin:
   clear()
-  choice = work(input('[0] Streams\n\n[1] Chat\n\n[2] Assistant\n\n[3] Store\n\n[4] Encryption\n\n[5] Log out\n\nChoice: '))
+  choice = work(input('[0] ThoughtsNet\n\n[1] Chat\n\n[2] Assistant\n\n[3] Store\n\n[4] Encryption\n\n[5] Tools\n\n[6] Log out\n\n[7] Exit\n\nChoice: '))
   if choice == 0:
-    clear()
-    wip()
+    thought = ThoughtsNet(acc, thoughtsfile, thoughtsfolder)
+    thought.open()
+    while True:
+      clear()
+      x, messages, names = thought.get()
+      print(x)
+      x = input('\nThought: ')
+      y, search = dividing(x, ' ')
+      #input([y.upper == '!search', search])
+      if x.upper() == '!UPDATE': pass
+      elif y.upper() == '!SEARCH':
+        clear()
+        x, messages, names = thought.get()
+        input('\n'.join(thought.search(messages, names, search)))
+      elif x.upper() != '!STOP': thought.send(x)
+      else: break
   elif choice == 1:
     clear()
-    wip()
+    try: 
+      chat = chat(acc, input('Recipient: '))
+      chat.open()
+      while True:
+        clear()
+        x, messages, names = chat.get()
+        print(x)
+        x = input('\nMessage: ')
+        if x.upper() == '!UPDATE': pass
+        elif x.upper() != '!STOP':
+          try: chat.send(x)
+          except ValueError as e: input(e)
+        else: break
+    except ValueError as e: input(e)
   elif choice == 2: 
     clear()
     import assistant
@@ -369,4 +579,8 @@ while acc.loggedin:
     except: encryption({}, savefile, savedvariable).save(generateKey())
     encr = encryption(saved, savedfile, savedvariable)
     encr.menu()
-  elif choice == 5: acc.logout()
+  elif choice == 5:
+    tool = tools(acc)
+    tool.menu()
+  elif choice == 6: acc.logout()
+  elif choice == 7: break
